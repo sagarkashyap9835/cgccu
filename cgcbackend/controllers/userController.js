@@ -39,7 +39,7 @@ export const googleLogin = async (req, res) => {
         }
 
         // 3. JWT Token generate karein
-        const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        const jwtToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
             expiresIn: '30d'
         });
 

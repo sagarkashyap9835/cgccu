@@ -19,9 +19,9 @@ const Contact = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-  "http://localhost:5000/api/contact",
-  formData
-);
+        "http://localhost:5000/api/contact",
+        formData
+      );
 
       if (res.data.success) {
         toast.success("Enquiry sent successfully 🏠");

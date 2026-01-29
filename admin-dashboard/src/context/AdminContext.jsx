@@ -5,7 +5,7 @@ export const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("superAdminToken") || "");
-  const backendUrl = "http://localhost:5000";
+  const backendUrl = "https://cgccu-1.onrender.com";
 
   const loginAdmin = async (email, password) => {
     try {
