@@ -139,9 +139,11 @@ export const getProfile = async (req, res) => {
         }
 
         let parsedAddress = userData.address;
-        if (typeof parsedAddress === "string") {
-            try { parsedAddress = JSON.parse(userData.address); }
+        if (typeof parsedAddress === "string" && parsedAddress.trim() !== "") {
+            try { parsedAddress = JSON.parse(parsedAddress); }
             catch (e) { parsedAddress = { line1: "", line2: "" }; }
+        } else if (!parsedAddress || typeof parsedAddress !== "object") {
+            parsedAddress = { line1: "", line2: "" };
         }
 
         res.json({ success: true, userData: { ...userData._doc, address: parsedAddress } });
@@ -167,7 +169,18 @@ export const updateProfile = async (req, res) => {
 
         user.name = name;
         user.phone = phone;
-        user.address = JSON.parse(address);
+
+        // Handle address safely
+        if (typeof address === "string") {
+            try {
+                user.address = JSON.parse(address);
+            } catch (e) {
+                console.error("Address parse error:", e);
+            }
+        } else {
+            user.address = address;
+        }
+
         user.dob = dob;
         user.gender = gender;
 
@@ -186,7 +199,7 @@ export const updateProfile = async (req, res) => {
 // BECOME OWNER
 export const becomeOwner = async (req, res) => {
     try {
-        const userId = req.body.userId || req.userId; // Allow from body or auth middleware
+        const userId = req.userId || req.body.userId; // Priority to auth middleware
         if (!userId) return res.status(400).json({ success: false, message: "User ID required" });
 
         if (userId === 'super-admin') {
