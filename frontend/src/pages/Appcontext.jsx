@@ -7,7 +7,7 @@ export const AppContext = createContext();
 const AppcontextProvider = ({ children }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-  
+
   const [searchTerm, setSearchTerm] = useState("");
 
   // Token state
@@ -31,7 +31,13 @@ const AppcontextProvider = ({ children }) => {
       }
     } catch (error) {
       console.log("Get Profile Error:", error.response?.data || error.message);
-      toast.error(error.response?.data?.message || error.message);
+      if (error.response?.status === 401) {
+        // Token invalid or expired
+        setToken("");
+        localStorage.removeItem("token");
+        setUserData(false);
+      }
+      toast.error(error.response?.data?.message || "Session expired. Please login again.");
     }
   };
 

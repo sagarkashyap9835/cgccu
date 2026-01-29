@@ -15,6 +15,7 @@ const AddRoom = ({ refreshRooms }) => {
   const [availableRooms, setAvailableRooms] = useState(1);
   const [ownerName, setOwnerName] = useState("");
   const [aadhaarNumber, setAadhaarNumber] = useState("");
+  const [ownerPhone, setOwnerPhone] = useState("");
   const [aadhaarImage, setAadhaarImage] = useState(null);
 
   const [amenities, setAmenities] = useState({
@@ -51,6 +52,7 @@ const AddRoom = ({ refreshRooms }) => {
     // Append Owner Details
     formData.append("ownerName", ownerName);
     formData.append("aadhaarNumber", aadhaarNumber);
+    formData.append("ownerPhone", ownerPhone);
     formData.append("aadhaarImage", aadhaarImage);
 
     Object.keys(amenities).forEach((key) => {
@@ -82,6 +84,7 @@ const AddRoom = ({ refreshRooms }) => {
         setImages([]);
         setOwnerName("");
         setAadhaarNumber("");
+        setOwnerPhone("");
         setAadhaarImage(null);
         if (refreshRooms) refreshRooms();
       }
@@ -99,7 +102,7 @@ const AddRoom = ({ refreshRooms }) => {
         <h2 className="text-2xl font-bold text-center">Add Property (Owner)</h2>
         <p className="text-xs text-center text-gray-500">Submit your property for Admin Verification</p>
 
-      
+
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
           <h3 className="font-semibold text-sm mb-2 text-blue-800">Owner Verification</h3>
           <div className="space-y-2">
@@ -117,6 +120,15 @@ const AddRoom = ({ refreshRooms }) => {
               value={aadhaarNumber}
               maxLength={12}
               onChange={(e) => setAadhaarNumber(e.target.value.replace(/\D/g, ''))}
+              className="input text-sm"
+              required
+            />
+            <input
+              type="text"
+              placeholder="Owner Phone Number"
+              value={ownerPhone}
+              maxLength={10}
+              onChange={(e) => setOwnerPhone(e.target.value.replace(/\D/g, ''))}
               className="input text-sm"
               required
             />
