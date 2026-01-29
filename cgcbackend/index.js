@@ -28,7 +28,7 @@ const allowedOrigins = [
   "http://127.0.0.1:5173",
   "http://127.0.0.1:5174",
   "https://cgccu-2.onrender.com",
-  "https://adminpannel-r7kw.onrender.com",
+  "https://admin-8ja8.onrender.com",
   "https://electromart-iivz.onrender.com"
 ];
 
