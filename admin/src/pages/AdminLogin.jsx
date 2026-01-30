@@ -1,10 +1,9 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
 import { AdminContext } from "../context/AdminContext";
 
 const AdminLogin = () => {
-  const { loginAdmin, registerOwner, loginWithGoogle } = useContext(AdminContext);
+  const { loginAdmin, registerOwner } = useContext(AdminContext);
   const [state, setState] = useState("Login"); // Login or Sign Up
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -30,15 +29,6 @@ const AdminLogin = () => {
       }
     }
   };
-
-  const handleGoogleSuccess = async (credentialResponse) => {
-    const success = await loginWithGoogle(credentialResponse.credential);
-    if (success) {
-      navigate("/items");
-    } else {
-      alert("Google Login Failed");
-    }
-  }
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100 px-4">
@@ -91,19 +81,6 @@ const AdminLogin = () => {
           </span>
         </p>
 
-        <div className="flex items-center gap-4">
-          <div className="flex-1 h-px bg-gray-100"></div>
-          <span className="text-[10px] text-gray-400 font-bold">OR</span>
-          <div className="flex-1 h-px bg-gray-100"></div>
-        </div>
-
-        <div className="flex justify-center">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => alert("Google Login Failed")}
-            useOneTap
-          />
-        </div>
       </div>
     </div>
   );

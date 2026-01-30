@@ -156,7 +156,7 @@
 //           )}
 //         </p>
 //       </form>
-      
+
 //       <GoogleLogin
 //     onSuccess={(credentialResponse) => {
 //       signInWithGoogle(credentialResponse);
@@ -181,7 +181,6 @@ import axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -197,7 +196,7 @@ const Login = () => {
     try {
       const endpoint = state === 'Sign Up' ? '/api/user/register' : '/api/user/login';
       const payload = state === 'Sign Up' ? { name, email, password } : { email, password };
-      
+
       const { data } = await axios.post(backendUrl + endpoint, payload);
       if (data.success) {
         toast.success(data.message);
@@ -206,22 +205,6 @@ const Login = () => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || error.message);
-    }
-  };
-
-  const signInWithGoogle = async (credentialResponse) => {
-    try {
-      const { data } = await axios.post(`${backendUrl}/api/user/google-login`, {
-        token: credentialResponse.credential,
-      });
-
-      if (data.success) {
-        toast.success(data.message);
-        localStorage.setItem('token', data.token);
-        setToken(data.token);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Google Login Failed");
     }
   };
 
@@ -265,17 +248,6 @@ const Login = () => {
 
         <div className="flex items-center my-4">
           <div className="flex-1 h-px bg-gray-300"></div>
-          <span className="px-3 text-gray-400 text-sm">OR</span>
-          <div className="flex-1 h-px bg-gray-300"></div>
-        </div>
-
-        {/* Google Login Button */}
-        <div className="flex justify-center mb-4">
-          <GoogleLogin
-            onSuccess={signInWithGoogle}
-            onError={() => toast.error("Google Login Failed")}
-            useOneTap
-          />
         </div>
 
         <p className="text-sm text-center text-gray-600">
