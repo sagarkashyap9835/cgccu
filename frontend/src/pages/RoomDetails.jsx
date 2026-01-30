@@ -22,6 +22,8 @@ const RoomDetails = () => {
     const [showChatModal, setShowChatModal] = useState(false);
     const [privateMessages, setPrivateMessages] = useState([]);
     const [newPrivateMessage, setNewPrivateMessage] = useState("");
+    const [aiAnalysis, setAiAnalysis] = useState(null);
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
 
     const fetchMessages = async () => {
         try {
@@ -129,6 +131,27 @@ const RoomDetails = () => {
         } catch (error) {
             console.error("Chat error:", error);
             toast.error(error.response?.data?.message || "Failed to send message");
+        }
+    };
+
+    const fetchAiAnalysis = async () => {
+        if (aiAnalysis) return; // Don't re-fetch if already present
+        setIsAnalyzing(true);
+        try {
+            const res = await axios.post(`${backendUrl}/api/ai/analyze-safety`, {
+                address: room.address || room.ownerPhone + " area, Sitamarhi",
+                title: room.title,
+                description: room.description
+            });
+            if (res.data.success) {
+                setAiAnalysis(res.data.analysis);
+                toast.success("AI Analysis Complete! 🛡️");
+            }
+        } catch (error) {
+            console.error("AI Error:", error);
+            toast.error("AI Safety service is temporarily unavailable");
+        } finally {
+            setIsAnalyzing(false);
         }
     };
 
@@ -313,6 +336,95 @@ const RoomDetails = () => {
                         </div>
                     </div>
                 )}
+
+                {/* --- AI Safety Section --- */}
+                <div className="bg-gradient-to-br from-slate-900 to-black rounded-3xl shadow-2xl overflow-hidden border border-slate-800">
+                    <div className="p-8 lg:p-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div className="space-y-6">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                                </span>
+                                AI Safety Intelligence
+                            </div>
+                            <h2 className="text-3xl lg:text-4xl font-black text-white leading-tight">
+                                Is this area <span className="text-blue-500">Safe?</span> Ask <span className="italic font-light text-slate-400">SafeStay AI</span>
+                            </h2>
+                            <p className="text-slate-400 text-sm lg:text-base leading-relaxed">
+                                Our intelligent AI analyzes local crime data, street lighting, and neighborhood reviews to give you a real-time safety report.
+                            </p>
+                            {!aiAnalysis ? (
+                                <button
+                                    onClick={fetchAiAnalysis}
+                                    disabled={isAnalyzing}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-xl shadow-blue-900/40 flex items-center gap-3 active:scale-95 disabled:opacity-50"
+                                >
+                                    {isAnalyzing ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                            Analyzing Locality...
+                                        </>
+                                    ) : (
+                                        "Generate Safety Report ➔"
+                                    )}
+                                </button>
+                            ) : (
+                                <div className="space-y-4 animate-fade-in">
+                                    <div className="flex items-center gap-4">
+                                        <div className="text-4xl font-black text-blue-500">{aiAnalysis.score}/10</div>
+                                        <div className="h-2 flex-1 bg-slate-800 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-1000"
+                                                style={{ width: `${aiAnalysis.score * 10}%` }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    <p className="text-slate-300 text-sm italic font-medium">"{aiAnalysis.summary}"</p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="relative">
+                            {aiAnalysis ? (
+                                <div className="bg-slate-800/40 backdrop-blur-md rounded-2xl p-6 border border-slate-700 space-y-6">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-3">
+                                            <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Highlights</p>
+                                            <ul className="space-y-2">
+                                                {aiAnalysis.pros.map((pro, i) => (
+                                                    <li key={i} className="text-xs text-slate-300 flex items-start gap-2">
+                                                        <span className="text-blue-500 text-[10px] mt-0.5">✔</span> {pro}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div className="space-y-3 border-l border-slate-700 pl-4">
+                                            <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Keep in Mind</p>
+                                            <ul className="space-y-2">
+                                                {aiAnalysis.cons.map((con, i) => (
+                                                    <li key={i} className="text-xs text-slate-300 flex items-start gap-2">
+                                                        <span className="text-amber-500 text-[10px] mt-0.5">!</span> {con}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div className="pt-4 border-t border-slate-700">
+                                        <p className="text-[10px] font-black text-white uppercase tracking-widest mb-1">Recommendation</p>
+                                        <p className="text-xs text-slate-400 font-medium">{aiAnalysis.recommendation}</p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="aspect-video bg-slate-800/20 rounded-2xl border border-dashed border-slate-700 flex flex-col items-center justify-center text-center p-8">
+                                    <div className="text-4xl opacity-20 mb-4">🛡️</div>
+                                    <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Locked Area Insights</p>
+                                    <p className="text-slate-600 text-[10px] mt-1 italic">Click generate to unlock AI neighborhood analytics</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
 
                 {/* Community Discussion Section */}
                 <div className="bg-white rounded-3xl shadow-xl p-6 lg:p-10">
