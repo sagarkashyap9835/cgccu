@@ -12,7 +12,7 @@ import RoomDetails from './pages/RoomDetails'
 import Cart from './pages/Cart'
 import PlaceOrder from './pages/PlaceOrder'
 import Footer from './pages/Footer'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
 const App = () => {
   return (
@@ -20,6 +20,7 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/index.html" element={<Navigate to="/" />} />
         <Route path="/findhome" element={<Findhome />} />
         <Route path="/room/:id" element={<RoomDetails />} />
         <Route path="/cart" element={<Cart />} />

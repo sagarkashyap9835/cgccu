@@ -6,7 +6,7 @@ export const AdminContext = createContext();
 export const AdminProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("adminToken") || "");
   const [adminData, setAdminData] = useState(false);
-  const backendUrl = "https://admin-8ja8.onrender.com";
+  const backendUrl = "https://cgccu-1.onrender.com";
 
   const loadAdminProfileData = async () => {
     try {

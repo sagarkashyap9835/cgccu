@@ -3,15 +3,14 @@ import axios from "axios";
 import { AdminContext } from "../context/AdminContext";
 
 const AdminLogin = () => {
-  const { loginAdmin } = useContext(AdminContext);
+  const { loginAdmin, backendUrl } = useContext(AdminContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // const res = await axios.post("http://localhost:5000/api/admin/login", { email, password });
-      const res = await axios.post("https://raja-electronic.onrender.com/api/admin/login", { email, password });
+      const res = await axios.post(`${backendUrl}/api/admin/login`, { email, password });
       if (res.data.success) {
         loginAdmin(res.data.token);
         alert("Login Successful");

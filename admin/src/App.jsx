@@ -25,6 +25,7 @@ import AddItem from "./pages/AddItem";
 import ItemList from "./pages/ItemList";
 import OrderList from "./pages/OrderList";
 import Messages from "./pages/Messages";
+import { Navigate } from "react-router-dom";
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
       <Router>
         <AdminNavbar />
         <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/index.html" element={<Navigate to="/login" />} />
           <Route path="/login" element={<AdminLogin />} />
 
           {/* Protected Admin Layout */}
